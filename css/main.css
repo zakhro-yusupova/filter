@@ -1,0 +1,26 @@
+body{
+  margin: 0;
+  box-sizing: border-box;
+  background-color: black;
+}
+
+.list{
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  padding: 0 10px;
+  margin: 0;
+  row-gap: 20px;
+  column-gap: 20px;
+}
+
+
+.list__img{
+  width: 100%;
+  height: auto;
+}
+
+.list__subinfo{
+  margin-left: 15px;
+}

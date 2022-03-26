@@ -13,6 +13,12 @@ function renderMovies(arr, element){
 
   arr.forEach( film =>  movies.push(film.title));
 
+  movies.sort((a, b) =>{
+    if (b > a){
+      return -1
+    }
+  })
+
   movies.forEach(title => {
     let newOption = document.createElement("option");
     newOption.value = title;
@@ -35,7 +41,14 @@ function renderGenes(arr , element){
     })
   })
 
+  renderGeners.sort((a,b) => {
+    if(b > a){
+      return -1
+    }
+  })
+
   renderGeners.forEach(genre => {
+
     const newOption = document.createElement("option");
     newOption.value = genre;
     newOption.textContent = genre;
@@ -62,7 +75,9 @@ function renderFilms(arr, element){
     newText.textContent = film.overview.split(" ").slice(0 ,10).join(" ") + "...";
     newTime.textContent = dateFormat(film.release_date);
 
+
     for(var genre of film.genres){
+
       var newSubItem = document.createElement("li");
       newSubItem.textContent = genre;
       newSubItem.setAttribute("class", "me-1");
@@ -103,7 +118,7 @@ elMForm.addEventListener("submit", evt =>{
 
   let filterMovies = elSelectMovie.value == "all movies" ? films : films.filter(element => element.title.includes(elSelectMovie.value)) ;
 
-    renderFilms(filterMovies, elList);
+  renderFilms(filterMovies, elList);
 })
 
 
@@ -113,7 +128,7 @@ elForm.addEventListener("submit", evt =>{
   const selectVal = elSelect.value;
   let filterFilms = selectVal == "all genres" ? films : films.filter(element => element.genres.includes(selectVal))  ;
 
-    renderFilms(filterFilms, elList);
+  renderFilms(filterFilms, elList);
 })
 
 renderFilms(films, elList);

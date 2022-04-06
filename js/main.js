@@ -8,7 +8,66 @@ const elInput = document.querySelector(".input");
 const elList = document.querySelector(".list");
 const elBMList = document.querySelector(".bookmark-list");
 const elJsBtn = document.querySelectorAll(".js-btn");
+const elModalList = document.querySelector(".modal-list");
+const elModalTitle = document.querySelector(".modal-title");
 let bookMark = [];
+
+function renderBookMark(arr, element){
+
+  element.innerHTML = "";
+
+  arr.forEach(film => {
+
+    const newItem = document.createElement("li");
+    const newBtn = document.createElement("button");
+
+    newItem.textContent = film.title.split(" ").slice(0 , 3).join(" ");
+    newBtn.textContent = "Delete";
+
+    newItem.setAttribute("class", "d-flex justify-content-between mb-3 text-warning");
+    newItem.setAttribute("style", "width: 16rem");
+
+    newBtn.setAttribute("class", "btn-dark border-danger text-danger ms-2 delete-btn");
+    newBtn.type= "button";
+    newBtn.dataset.deleteId = film.id;
+
+    newItem.appendChild(newBtn);
+    element.appendChild(newItem);
+  })
+}
+
+elBMList.addEventListener("click", evt => {
+
+  const isDeleteBtn = evt.target.matches(".delete-btn");
+
+  if (isDeleteBtn){
+
+   const deleteBtnId = evt.target.dataset.filmId;
+
+   const findBookmarkId = bookMark.findIndex(e => e.id == deleteBtnId);
+
+   bookMark.splice(findBookmarkId, 1 );
+
+   renderBookMark(bookMark, elBMList);
+  }
+})
+
+
+elList.addEventListener("click", evt => {
+
+  const bookmarkBtn = evt.target.matches(".bookmark-btn");
+  if(bookmarkBtn){
+    const filmId = evt.target.dataset.filmId;
+
+    const findFilm = films.find( e => e.id === filmId);
+
+    if (!bookMark.includes(findFilm)) {
+      bookMark.push(findFilm)
+    }
+
+    renderBookMark (bookMark, elBMList);
+  }
+})
 
 function renderGenes(arr , element){
 
@@ -38,6 +97,8 @@ function renderGenes(arr , element){
 
 }
 
+renderGenes(films , elSelect);
+
 function renderFilms(arr, element){
 
   element.innerHTML = "";
@@ -48,37 +109,37 @@ function renderFilms(arr, element){
     let newDiv = document.createElement("div");
     let newHeading = document.createElement("h3");
     let newTime = document.createElement("time");
-    let newText = document.createElement("p");
     let newBookMarkBtn = document.createElement("button");
     let newImgBookMark = document.createElement("img");
-    newHeading.textContent = film.title.split(" ").slice(0 , 3).join(" ");
-    newText.textContent = film.overview.split(" ").slice(0 ,4).join(" ") + "...";
-    newTime.textContent = dateFormat(film.release_date);
-    newBookMarkBtn.textContent = "Bookmark ";
 
-    elForm.setAttribute("class", " d-flex justify-content-between align-items-center")
-    elInput.setAttribute("class", "form-control w-75 my-5 ms-5 bg-dark text-danger text-center ms-5");
+
+    newHeading.textContent = film.title.split(" ").slice(0 , 3).join(" ");
+    newTime.textContent = dateFormat(film.release_date);
+    newBookMarkBtn.textContent = "Bookmark";
+
+
+    elForm.setAttribute("class", "d-flex justify-content-between align-items-center")
+    elInput.setAttribute("class", "form-control w-75 my-5 bg-dark text-danger text-center");
     elSelect.setAttribute("class", "form-select w-50 my-5 ms-5 bg-dark text-danger text-center");
-    elBtn.setAttribute("class", "btn btn-danger px-3 ms-2 h-25");
+    elBtn.setAttribute("class", "btn btn-danger px-3 ms-2");
     newItem.setAttribute("class", "card bg-dark bg-opacity-50");
-    newItem.setAttribute("style", "width: 17rem");
+    newItem.setAttribute("style", "width: 15rem");
     newImg.setAttribute("src", film.poster);
     newImg.setAttribute("class", "list__img");
     newDiv.setAttribute("class", "card-body text-light fs-6");
-    newHeading.setAttribute("class", "my-2 h4 text-warning fw-bold ");
+    newHeading.setAttribute("class", "my-2 h4 text-warning fw-bold");
     newTime.setAttribute("datetime", "2022-03-12");
 
     newBookMarkBtn.setAttribute("class", "btn btn-dark border-warning mt-3 align-items-center");
     newBookMarkBtn.setAttribute("style", "display: block");
     newBookMarkBtn.classList.add("bookmark-btn");
     newBookMarkBtn.dataset.filmId = film.id;
-    newImgBookMark.setAttribute("class", "ms-2");
     newImgBookMark.setAttribute("src", "./images/bookmark.png");
+    newImgBookMark.setAttribute("class", "ms-2");
 
 
     newBookMarkBtn.appendChild(newImgBookMark);
     newDiv.appendChild(newHeading);
-    newDiv.appendChild(newText);
     newDiv.appendChild(newTime);
     newDiv.appendChild(newBookMarkBtn);
     newItem.appendChild(newImg);
@@ -87,49 +148,8 @@ function renderFilms(arr, element){
   })
 }
 
-function renderBookMark(arr, element){
+renderFilms(films, elList);
 
-  element.innerHTML = "";
-
-  arr.forEach(film => {
-
-    const newItem = document.createElement("li");
-    const newImg = document.createElement("img");
-    const newTitle = document.createElement("h3");
-    const newBtn = document.createElement("button");
-
-    newTitle.textContent = film.title;
-    newBtn.textContent = "Delete";
-
-    newItem.setAttribute("class", "d-flex justify-content-between mb-3");
-    newItem.setAttribute("style", "width: 17rem");
-    newTitle.setAttribute("class", "h4 text-warning fw-bold");
-    newBtn.setAttribute("class", "btn-dark border-danger text-danger ms-2");
-    newBtn.dataset.deleteId = film.id;
-
-    newItem.appendChild(newTitle);
-    newItem.appendChild(newBtn);
-    element.appendChild(newItem);
-
-  })
-}
-
-elList.addEventListener("click", evt => {
-
-  const bookmarkBtn = evt.target.matches(".bookmark-btn");
-  if(bookmarkBtn){
-    const filmId = evt.target.dataset.filmId;
-
-    const findFilm = films.find( e => e.id === filmId);
-
-    if (!bookMark.includes(findFilm)) {
-      bookMark.push(findFilm)
-    }
-
-
-    renderBookMark (bookMark, elBMList);
-  }
-})
 
 elForm.addEventListener("submit", evt =>{
   evt.preventDefault();
@@ -144,17 +164,3 @@ elInput.addEventListener("input", function(e){
   let searchedArr = films.filter(item => item.title.toLowerCase().includes(e.target.value.toLowerCase()));
   renderFilms(searchedArr, elList);
 })
-
-elBMList.addEventListener("click", (evt) => {
-  // elBMList.innerHTML = ""
-  if (evt.target.matches(".delete-btn")){
-   const deleteId = evt.target.dataset.deleteId;
-   console.log(deleteId);
-   bookMark = bookMark.filter(e => e.id !== deleteId);
-
-   renderBookMark(bookMark, elBMList);
-  }
-})
-
-renderFilms(films, elList);
-renderGenes(films , elSelect);
